@@ -43,7 +43,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+TaskHandle_t led_ON_Handle;
+TaskHandle_t led_OFF_Handle;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -60,38 +61,47 @@ static void MX_GPIO_Init(void);
 static void led_ON( void *pvParameters) {
 
 	while (1){
-
-		//HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-
-		//if (HAL_GPIO_ReadPin(PULS_GPIO_Port, PULS_Pin))
 		if (HAL_GPIO_ReadPin(PULS_GPIO_Port, PULS_Pin)){
 			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
 		}
 
 		vTaskDelay(400 / portTICK_PERIOD_MS);
+		vTaskResume( led_OFF_Handle );
+		vTaskSuspend( led_ON_Handle );
 
 	}
 
 }
 
 static void led_OFF( void *pvParameters) {
-	vTaskDelay(400 / portTICK_PERIOD_MS);
 
 	while (1){
-		/*
-		if (HAL_GPIO_ReadPin(PULS_GPIO_Port, PULS_Pin)){
-			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
-		}
-		else{
-			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
-		}*/
-
-		//if (HAL_GPIO_ReadPin(PULS_GPIO_Port, PULS_Pin))
 		if (HAL_GPIO_ReadPin(PULS_GPIO_Port, PULS_Pin)){
 			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
 		}
 
 		vTaskDelay(600 / portTICK_PERIOD_MS);
+		vTaskResume( led_ON_Handle );
+		vTaskSuspend( led_OFF_Handle );
+
+	}
+
+}
+
+// Tarea en caso de tener que usar una tarea distinta para leer el pulsador
+static void read_Button( void *pvParameters) {
+
+	while (1){
+		if (HAL_GPIO_ReadPin(PULS_GPIO_Port, PULS_Pin)){
+			vTaskResume( led_ON_Handle );
+		}
+		else{
+			vTaskSuspend( led_ON_Handle );
+			vTaskSuspend( led_OFF_Handle );
+		}
+
+		vTaskDelay(100 / portTICK_PERIOD_MS);
+
 	}
 
 }
@@ -136,14 +146,16 @@ int main(void)
 		  configMINIMAL_STACK_SIZE,
 		  NULL,
 		  1,
-		  NULL);
+		  &led_ON_Handle);
 
   xTaskCreate(led_OFF,
   		  "",
   		  configMINIMAL_STACK_SIZE,
   		  NULL,
   		  1,
-  		  NULL);
+  		  &led_OFF_Handle);
+
+  vTaskSuspend( led_OFF_Handle );
 
 
   /* USER CODE END 2 */
