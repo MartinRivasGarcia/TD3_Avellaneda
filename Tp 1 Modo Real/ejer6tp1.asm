@@ -64,14 +64,6 @@ no_ingresa_enter:
 
     jmp fin
 
-fin:
-    mov ah, 4ch
-    int 21h
-
-codigo ends
-end inicio
-
-
 ContarLetrasABC:
     pop ax               ; Sacar la dirección de letras de la pila a AX
     mov al, [ax]         ; Cargar el contenido de letras en AL
@@ -99,3 +91,10 @@ FinContarLetras:
     ; Puedes hacer lo que quieras con bx, por ejemplo, mostrarlo o usarlo en tu programa principal
 
     ret
+
+fin:
+    mov ah, 4ch
+    int 21h
+
+codigo ends
+end inicio
