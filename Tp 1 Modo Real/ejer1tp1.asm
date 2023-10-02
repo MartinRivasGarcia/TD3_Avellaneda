@@ -28,18 +28,18 @@ inicio: mov ax,datos
 		MOV AL,127
 		MOV CX,128
 		MOV BX,OFFSET PRIMERO
-CICLO:	MOV [bx],AL
+CICLOA:	MOV [bx],AL
 		DEC AL
 		INC BX ;No se si BX lo tengo q decrementar o incrementar
-		LOOP CICLO
+		LOOP CICLOA
 
 		MOV AL,255
 		MOV CX,256
 		MOV BX,OFFSET segundo
-CICLO:	MOV [bx],AL
+CICLOB:	MOV [bx],AL
 		DEC AL
 		INC BX
-		LOOP CICLO
+		LOOP CICLOB
 
 SEGUIR:
 	mov ah,4ch

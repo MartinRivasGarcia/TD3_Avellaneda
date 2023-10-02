@@ -70,6 +70,37 @@ no_es_a_b_c:
 
     jmp fin
 
+<<<<<<< HEAD
+=======
+ContarLetrasABC:
+    pop ax               ; Sacar la dirección de letras de la pila a AX
+    mov al, ax         ; Cargar el contenido de letras en AL
+
+    mov dl, al           ; Copiar el valor de letras a dl para comparar
+
+    cmp dl, 'a'          ; Comparar con 'a'
+    je EsLetraABC        ; Saltar si es 'a'
+
+    cmp dl, 'b'          ; Comparar con 'b'
+    je EsLetraABC        ; Saltar si es 'b'
+
+    cmp dl, 'c'          ; Comparar con 'c'
+    je EsLetraABC        ; Saltar si es 'c'
+
+NoEsLetraABC:
+    jmp FinContarLetras  ; Salir de la subrutina cuando se alcance el límite de 9 letras o después de pulsar Enter
+
+EsLetraABC:
+    inc byte ptr [letras]
+    jmp FinContarLetras  ; Salir de la subrutina cuando se alcance el límite de 9 letras o después de pulsar Enter
+
+FinContarLetras:
+    ; En bx tienes el número de letras a, b, c
+    ; Puedes hacer lo que quieras con bx, por ejemplo, mostrarlo o usarlo en tu programa principal
+
+    ret
+
+>>>>>>> 9d971f8454e36bc0759d53b068815893f098add4
 fin:
     mov ah, 4ch
     int 21h
