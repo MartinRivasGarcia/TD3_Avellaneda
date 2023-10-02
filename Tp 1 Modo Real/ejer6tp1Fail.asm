@@ -40,17 +40,11 @@ no_ingresa_enter:
     int 21h
 
     ; Verificar si la letra es a, b o c
-    cmp al, 99            ; Hasta letra c
-    ja  no_es_a_b_c
+    mov ax, offset letras  ; Cargar la dirección de la variable letras en AX
+    push ax               ; Poner la dirección en la pila para que la subrutina pueda acceder a ella
 
-    cmp al, 97            ; Hasta letra a
-    jb  no_es_a_b_c
+    call ContarLetrasABC  ; Llamar a la subrutina
 
-es_a_b_c:
-    ; Incrementar la variable "letras"
-    inc byte ptr [letras]
-
-no_es_a_b_c:
     cmp al, 13            ; Comparo con el enter
     ja  no_ingresa_enter       ; Si es mayor o menor al enter
     jb  no_ingresa_enter
@@ -69,6 +63,34 @@ no_es_a_b_c:
     int 21h
 
     jmp fin
+
+ContarLetrasABC:
+    pop ax               ; Sacar la dirección de letras de la pila a AX
+    mov al, [ax]         ; Cargar el contenido de letras en AL
+
+    mov dl, al           ; Copiar el valor de letras a dl para comparar
+
+    cmp dl, 'a'          ; Comparar con 'a'
+    je EsLetraABC        ; Saltar si es 'a'
+
+    cmp dl, 'b'          ; Comparar con 'b'
+    je EsLetraABC        ; Saltar si es 'b'
+
+    cmp dl, 'c'          ; Comparar con 'c'
+    je EsLetraABC        ; Saltar si es 'c'
+
+NoEsLetraABC:
+    jmp FinContarLetras  ; Salir de la subrutina cuando se alcance el límite de 9 letras o después de pulsar Enter
+
+EsLetraABC:
+    inc byte ptr [letras]
+    jmp FinContarLetras  ; Salir de la subrutina cuando se alcance el límite de 9 letras o después de pulsar Enter
+
+FinContarLetras:
+    ; En bx tienes el número de letras a, b, c
+    ; Puedes hacer lo que quieras con bx, por ejemplo, mostrarlo o usarlo en tu programa principal
+
+    ret
 
 fin:
     mov ah, 4ch
