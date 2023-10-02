@@ -66,7 +66,7 @@ no_ingresa_enter:
 
 ContarLetrasABC:
     pop ax               ; Sacar la dirección de letras de la pila a AX
-    mov al, [ax]         ; Cargar el contenido de letras en AL
+    mov al, ax         ; Cargar el contenido de letras en AL
 
     mov dl, al           ; Copiar el valor de letras a dl para comparar
 
