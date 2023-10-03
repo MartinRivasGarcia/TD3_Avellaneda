@@ -1,9 +1,7 @@
 datos segment
-    mens1 db 'Ingrese numeros del 1 al 9:', '$'
-    mens2 db 13, 10, 'Usted Ingreso el numero:'
+    mens1 db 13, 10, 'Ingrese numeros del 1 al 9:', '$'
+    mens2 db 13, 10, 'Usted ha ingresado ', '$'
     numero db '0', '$'
-    mens3 db 13, 10, 'Usted ingreso cualquier numero!', '$'
-    mens4 db 13, 10, 'Usted ha ingresado ', '$'
     teclas_numericas db 0 ; Variable para contar las teclas numéricas que cumplen con la condición
 datos ends
 
@@ -27,7 +25,7 @@ inicio:
     mov ss, ax
     mov sp, offset tope
 
-    ; Inicializar la variable "impares" a 0
+    ; Inicializar la variable "teclas_numericas" a 0
     mov byte ptr [teclas_numericas], 0
 
 
@@ -43,18 +41,18 @@ no_ingresa_enter:
     int 21h
 
     ;call Sxxx2 ; Llamar a la subrutina para contar teclas numéricas que cumplen la condición
-    mov al, dl ; Obtener el resultado de la subrutina en AL (número de teclas que cumplen la condición)
-
-    ; Verificar si el número es mayor que 6, menor que 3 y no es 9
-    cmp al, 57 ; Comparar con '9'
-    je no_es_valido ; Si es 9, no es válido
+    ;mov al, dl ; Obtener el resultado de la subrutina en AL (número de teclas que cumplen la condición)
+    
     cmp al, 54 ; Comparar con '6'
-    jbe no_es_valido ; Si es menor o igual a 6, no es válido
+    ja es_valido ; Si es mayor a 6, es válido
     cmp al, 51 ; Comparar con '3'
     ja no_es_valido ; Si es mayor que 3, no es válido
 
     ; Si llegamos aquí, el número cumple con las condiciones
     ; Incrementar la variable de teclas numéricas válidas
+es_valido:
+    cmp al, 57 ; Comparar con '9'
+    jae no_es_valido ; Si es mayor igual a 9, no es válido
     inc byte ptr [teclas_numericas]
 
 no_es_valido:
@@ -64,13 +62,13 @@ no_es_valido:
     jb  no_ingresa_enter
 
  ;   LOOP CICLO
-
+    dec byte ptr [teclas_numericas]
     ; Mostrar la cantidad de números letras
     mov dx, offset mens2
     mov ah, 9
     int 21h
 
-    mov al, [letras]     ; Cargar el valor de "letras" en AL
+    mov al, [teclas_numericas]     ; Cargar el valor de "letras" en AL
     add al, '0'           ; Convertir el valor en AL a carácter
     mov dl, al
     mov ah, 2             ; Mostrar el carácter en pantalla
