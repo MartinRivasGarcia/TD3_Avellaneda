@@ -23,8 +23,7 @@ inicio: mov ax,datos
 	mov sp,offset tope
 
 
-; AQUI VA MI PROGRAMA
-	
+; AQUI VA MI PROGRAMA	
     CALL LEER_INT_20
 
 SEGUIR:
